@@ -24,7 +24,6 @@ import socket
 import re
 # you may use urllib to encode data appropriately
 import urllib.parse
-import time
 
 def help():
     print("httpclient.py [GET/POST] [URL]\n")
@@ -91,6 +90,7 @@ class HTTPClient(object):
                 "Accept: */*\r\n" + \
                 "Connection: close\r\n\r\n"
 
+        # Send data
         self.sendall(package)
 
         # Receive data
@@ -103,7 +103,7 @@ class HTTPClient(object):
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
-         # Parse url to get info
+        # Parse url to get info
         host, port, path = self.get_host_port_path(url)
         
         # Establish connection
@@ -115,6 +115,7 @@ class HTTPClient(object):
                 "Accept: */*\r\n" + \
                 "Connection: close\r\n"
 
+        # Encode and add args if they exist, otherwise close off the header
         if args:
             content = urllib.parse.urlencode(args)
             content_length = str(len(content))
@@ -124,6 +125,7 @@ class HTTPClient(object):
         else:
             package += "Content-length: 0\r\n\r\n"
 
+        # Send data
         self.sendall(package)
 
         # Receive data
